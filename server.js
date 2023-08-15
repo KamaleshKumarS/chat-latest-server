@@ -15,7 +15,9 @@ const Conversations=new mongoose.model('Conversations',conSchema)
 app.use(express.json())
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cors());
+app.use(cors({
+	orgin:"*",
+}));
 
 app.post('/register',(req,res)=>{
 	console.log(req.body)
