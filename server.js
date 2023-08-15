@@ -11,22 +11,12 @@ const userSchema=new mongoose.Schema({username:String,password:String,email:Stri
 const Kuser=new mongoose.model('Kuser',userSchema);
 const conSchema=new mongoose.Schema({members:Array,text:Array})
 const Conversations=new mongoose.model('Conversations',conSchema)
-let Socketusers=[]
+
 app.use(express.json())
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors());
-const server = http.createServer(app,{
-	cors:{
-		orgin:['*'],
-	}
-});
-const io = socket(server);
-/*const io=require('socket.io')(5000,{
-	cors:{
-		orgin:['*'],
-	}
-})*/
+
 app.post('/register',(req,res)=>{
 	console.log(req.body)
 	if(req.body){
@@ -154,37 +144,9 @@ app.get('/get-users',async(req,res)=>{
 		res.json(val)
 	})
 })
-const addUser=(id,soId)=>{
-	Socketusers=Socketusers.filter(user=>user.id!==id)
-	Socketusers.push({id:id,socketId:soId})
-	console.log(Socketusers)
-}
-const removeUser=(soid)=>{
-	Socketusers=Socketusers.filter(user=>user.socketId!==soid)
-	console.log(Socketusers)
-}
-io.on('connection',socket=>{
-	socket.on('add-user',id=>{
-		addUser(id,socket.id)
-	})
-	socket.on('send-message',(({reciever,message})=>{
-		const Suser=Socketusers.filter(user=>user.id===reciever)
-		console.log("message sent :",Suser) 
-		if(!Suser[0]){
-			console.log("No Suser");
-			return
-		}
-		socket.to(Suser[0].socketId).emit('priv-msg',message);
-	}))
-	
 
 
-	socket.on('disconnect',()=>{
-		removeUser(socket.id)
-	})
-})
-
-app.listen(4000,()=>{
+app.listen(process.env.PORT || 4000,()=>{
 	console.log('server started on 4000');
 	console.log("hh");	
 });
