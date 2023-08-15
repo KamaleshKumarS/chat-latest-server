@@ -15,15 +15,8 @@ const Conversations=new mongoose.model('Conversations',conSchema)
 app.use(express.json())
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cors({
-	orgin:["*"],
-}));
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", ["*"]);
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-})
+app.use(cors());
+
 app.post('/register',(req,res)=>{
 	console.log(req.body)
 	if(req.body){
